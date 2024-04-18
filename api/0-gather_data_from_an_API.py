@@ -1,30 +1,18 @@
 #!/usr/bin/python3
 import requests
 import sys
+import json
 
 if __name__ == "__main__":
-    url = 'https://jsonplaceholder.typicode.com/users'
+    url = "https://jsonplaceholder.typicode.com/users/{}"\
+        .format(sys.argv[1])
     response = requests.get(url)
-    data = response.json()
-    user_id = sys.argv[1]
-    employee_name = ""
-    for user in data:
-        if user.get('id') == int(user_id):
-            employee_name = user.get('name')
-            break
-    url = 'https://jsonplaceholder.typicode.com/todos'
+    user = response.json()
+    url = "https://jsonplaceholder.typicode.com/todos?userId={}"\
+        .format(sys.argv[1])
     response = requests.get(url)
-    data = response.json()
-    total_tasks = 0
-    done_tasks = 0
-    tasks = []
-    for task in data:
-        if task.get('userId') == int(user_id):
-            total_tasks += 1
-            if task.get('completed'):
-                done_tasks += 1
-                tasks.append(task.get('title'))
-    print("Employee {} is done with tasks({}/{}):".format(employee_name,
-                                                done_tasks, total_tasks))
-    for task in tasks:
-        print("\t {}".format(task))
+    todos = response.json()
+    completed = [todo for todo in todos if todo.get("completed") is True]
+    print("Employee {} is done with tasks({}/{}):"\
+        .format(user.get("name"), len(completed), len(todos)))
+    [print("\t {}".format(todo.get("title"))) for todo in completed]
