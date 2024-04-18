@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Gather data from an API"""
+"""Export data in the JSON format"""
 
 
 import requests
